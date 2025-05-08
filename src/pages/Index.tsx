@@ -3,6 +3,7 @@ import { useState } from 'react';
 import ZodiacSelector from '@/components/ZodiacSelector';
 import HoroscopeDisplay from '@/components/HoroscopeDisplay';
 import CosmicElements from '@/components/CosmicElements';
+import CannabisRecommendations from '@/components/CannabisRecommendations';
 import { zodiacSigns } from '@/utils/zodiacData';
 
 const Index = () => {
@@ -31,8 +32,13 @@ const Index = () => {
           <CosmicElements sign={selectedSign} />
         </div>
 
-        <div>
-          <HoroscopeDisplay sign={selectedSign} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="col-span-1 md:col-span-2">
+            <HoroscopeDisplay sign={selectedSign} />
+          </div>
+          <div className="col-span-1 md:col-span-2">
+            <CannabisRecommendations sign={selectedSign} />
+          </div>
         </div>
         
         <footer className="mt-16 text-center text-xs text-muted-foreground">

@@ -6,6 +6,7 @@ export interface HoroscopeReading {
   wellness: string;
   luckyNumber: number;
   compatibility: string;
+  cannabisStrains: string[];
 }
 
 // Mock data for horoscopes
@@ -16,7 +17,8 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
     career: "A bold move at work could lead to recognition. Don't be afraid to present your ideas, even if they seem unconventional.",
     wellness: "Physical activity is crucial today. A high-energy workout will help channel your abundant energy in a positive direction.",
     luckyNumber: 9,
-    compatibility: "Leo"
+    compatibility: "Leo",
+    cannabisStrains: ["Jack Herer", "Durban Poison", "Green Crack", "Super Silver Haze"]
   },
   "Taurus": {
     general: "Stability and security are highlighted today. Focus on building a solid foundation for future endeavors. Your practical approach will yield long-term benefits.",
@@ -24,7 +26,8 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
     career: "Financial matters require attention. A careful review of your resources might reveal an opportunity for growth or investment.",
     wellness: "Grounding exercises like walking barefoot outdoors or gardening will help maintain your emotional equilibrium.",
     luckyNumber: 6,
-    compatibility: "Virgo"
+    compatibility: "Virgo",
+    cannabisStrains: ["Granddaddy Purple", "Northern Lights", "Bubba Kush", "Purple Punch"]
   },
   "Gemini": {
     general: "Your communication skills are especially sharp today. Use this gift to resolve any lingering misunderstandings. Networking opportunities abound.",
@@ -32,7 +35,8 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
     career: "A collaboration opportunity may arise. Your ability to see multiple perspectives makes you a valuable team member.",
     wellness: "Mental exercises like puzzles or learning something new will keep your mind active and satisfied.",
     luckyNumber: 5,
-    compatibility: "Libra"
+    compatibility: "Libra",
+    cannabisStrains: ["Tangie", "Sour Diesel", "Blue Dream", "Clementine"]
   },
   "Cancer": {
     general: "Your intuition is particularly strong today. Trust your gut feelings about people and situations. Home and family matters take precedence.",
@@ -40,7 +44,8 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
     career: "Nurturing projects and teammates will bring satisfaction. Your empathetic approach helps solve workplace challenges.",
     wellness: "Self-care rituals that soothe your soul are essential today. Consider a relaxing bath or preparing your favorite comfort food.",
     luckyNumber: 2,
-    compatibility: "Scorpio"
+    compatibility: "Scorpio",
+    cannabisStrains: ["OG Kush", "Wedding Cake", "Blueberry", "Girl Scout Cookies"]
   },
   "Leo": {
     general: "Your charisma is irresistible today. Use it to inspire and uplift those around you. Creative projects will benefit from your unique perspective.",
@@ -48,7 +53,8 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
     career: "Leadership opportunities may arise. Your ability to motivate others makes you an ideal candidate for taking charge of important projects.",
     wellness: "Activities that allow self-expression will nurture your soul. Consider dance, theater, or other creative outlets.",
     luckyNumber: 1,
-    compatibility: "Sagittarius"
+    compatibility: "Sagittarius",
+    cannabisStrains: ["Pineapple Express", "Mimosa", "Lemon Haze", "Strawberry Cough"]
   },
   "Virgo": {
     general: "Details matter today. Your analytical skills help solve complex problems. Organization and planning set you up for success.",
@@ -56,7 +62,8 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
     career: "Your meticulous approach brings recognition. Don't hesitate to point out improvements that could benefit the team.",
     wellness: "Digestive health needs attention. Mindful eating and proper nutrition will help maintain your energy levels.",
     luckyNumber: 4,
-    compatibility: "Taurus"
+    compatibility: "Taurus",
+    cannabisStrains: ["Harlequin", "AC/DC", "Cannatonic", "CBD Critical Mass"]
   },
   "Libra": {
     general: "Harmony and balance are your themes today. Your diplomatic skills help resolve conflicts around you. Aesthetic pursuits bring joy.",
@@ -64,7 +71,8 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
     career: "Collaborative projects thrive under your influence. Your ability to see all sides of a situation makes you an excellent mediator.",
     wellness: "Creating beauty in your environment contributes to your overall wellbeing. Refresh your space with pleasing colors or objects.",
     luckyNumber: 7,
-    compatibility: "Gemini"
+    compatibility: "Gemini",
+    cannabisStrains: ["Wedding Cake", "Do-Si-Dos", "Gelato", "Cherry Pie"]
   },
   "Scorpio": {
     general: "Transformation is occurring beneath the surface. Embrace change rather than resisting it. Your perceptiveness reveals hidden truths.",
@@ -72,7 +80,8 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
     career: "Research and investigation yield valuable insights. Your ability to uncover information gives you an advantage in negotiations or problem-solving.",
     wellness: "Emotional processing is essential. Journaling or therapy helps release pent-up feelings and promotes healing.",
     luckyNumber: 8,
-    compatibility: "Cancer"
+    compatibility: "Cancer",
+    cannabisStrains: ["GMO Cookies", "Death Star", "Skywalker OG", "Gorilla Glue"]
   },
   "Sagittarius": {
     general: "Expansion and growth define your day. Learning opportunities abound, and your optimistic outlook attracts positive experiences.",
@@ -80,7 +89,8 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
     career: "Higher education or travel may impact your professional path. Keep an open mind about opportunities that broaden your horizons.",
     wellness: "Physical activity that involves exploration, like hiking or trying a new sport, satisfies both body and spirit.",
     luckyNumber: 3,
-    compatibility: "Aries"
+    compatibility: "Aries",
+    cannabisStrains: ["Trainwreck", "Ghost Train Haze", "Alaskan Thunder Fuck", "Amnesia Haze"]
   },
   "Capricorn": {
     general: "Long-term planning pays off today. Your disciplined approach to goals brings tangible results. Authority figures may offer support.",
@@ -88,7 +98,8 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
     career: "Professional advancement is possible. Your hard work and dedication catch the attention of those in positions of influence.",
     wellness: "Skeletal health deserves attention. Weight-bearing exercises and proper posture contribute to your physical wellbeing.",
     luckyNumber: 10,
-    compatibility: "Virgo"
+    compatibility: "Virgo",
+    cannabisStrains: ["Critical Mass", "Afghan Kush", "Hindu Kush", "Rock Star"]
   },
   "Aquarius": {
     general: "Innovation and originality mark your day. Your unique perspective offers solutions others might miss. Community involvement brings fulfillment.",
@@ -96,7 +107,8 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
     career: "Technological advancements or humanitarian projects benefit from your input. Don't hesitate to suggest unconventional approaches.",
     wellness: "Circulation and respiratory health respond well to attention. Breathing exercises and proper hydration support overall vitality.",
     luckyNumber: 11,
-    compatibility: "Libra"
+    compatibility: "Libra",
+    cannabisStrains: ["Space Queen", "AK-47", "Chocolope", "XJ-13"]
   },
   "Pisces": {
     general: "Spiritual insights guide your actions today. Your compassion creates healing opportunities for yourself and others. Creative inspiration flows freely.",
@@ -104,7 +116,8 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
     career: "Artistic or helping professions highlight your natural talents. Trust your intuition about workplace dynamics and opportunities.",
     wellness: "Foot care and immune system support benefit from attention. Adequate rest prevents emotional and physical depletion.",
     luckyNumber: 12,
-    compatibility: "Scorpio"
+    compatibility: "Scorpio",
+    cannabisStrains: ["Blue Dream", "Northern Lights", "Purple Kush", "Granddaddy Purple"]
   }
 };
 
@@ -115,6 +128,7 @@ export const getHoroscope = (sign: string): HoroscopeReading => {
     career: "Focus on your goals and let your natural talents guide you forward.",
     wellness: "Take time for self-care and listen to what your body needs today.",
     luckyNumber: 0,
-    compatibility: "Unknown"
+    compatibility: "Unknown",
+    cannabisStrains: ["Balance", "Harmony", "Serenity"]
   };
 };
