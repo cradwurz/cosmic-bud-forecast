@@ -4,6 +4,7 @@ import ZodiacSelector from '@/components/ZodiacSelector';
 import HoroscopeDisplay from '@/components/HoroscopeDisplay';
 import CosmicElements from '@/components/CosmicElements';
 import CannabisRecommendations from '@/components/CannabisRecommendations';
+import CosmicAd from '@/components/CosmicAd';
 import { zodiacSigns } from '@/utils/zodiacData';
 
 const Index = () => {
@@ -28,6 +29,8 @@ const Index = () => {
           />
         </div>
 
+        <CosmicAd position="top" />
+
         <div className="mb-8">
           <CosmicElements sign={selectedSign} />
         </div>
@@ -37,9 +40,14 @@ const Index = () => {
             <HoroscopeDisplay sign={selectedSign} />
           </div>
           <div className="col-span-1 md:col-span-2">
+            <CosmicAd position="middle" />
+          </div>
+          <div className="col-span-1 md:col-span-2">
             <CannabisRecommendations sign={selectedSign} />
           </div>
         </div>
+        
+        <CosmicAd position="bottom" />
         
         <footer className="mt-16 text-center text-xs text-muted-foreground">
           <p>The stars guide us, but we chart our own destiny.</p>
