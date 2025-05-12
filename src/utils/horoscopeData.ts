@@ -1,4 +1,3 @@
-
 export interface HoroscopeReading {
   general: string;
   love: string;
@@ -7,6 +6,12 @@ export interface HoroscopeReading {
   luckyNumber: number;
   compatibility: string;
   cannabisStrains: string[];
+}
+
+export interface SignCombination {
+  sunSign: string;
+  moonSign: string;
+  risingSign: string;
 }
 
 // Mock data for horoscopes
@@ -121,6 +126,38 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
   }
 };
 
+// Additional cannabis strains based on moon sign
+const moonSignStrains: Record<string, string[]> = {
+  "Aries": ["Mimosa", "Strawberry Cough", "Bruce Banner"],
+  "Taurus": ["Zombie Kush", "Mendo Breath", "Zkittlez"],
+  "Gemini": ["Pineapple Express", "Green Crack", "Tangie"],
+  "Cancer": ["Blue Dream", "Platinum Cookies", "Skywalker OG"],
+  "Leo": ["Sour Diesel", "Lemon Haze", "Jack Herer"],
+  "Virgo": ["Harlequin", "Charlotte's Web", "ACDC"],
+  "Libra": ["Wedding Cake", "Gelato", "Runtz"],
+  "Scorpio": ["Death Star", "GMO", "King Louis XIII"],
+  "Sagittarius": ["Ghost Train Haze", "Trainwreck", "Durban Poison"],
+  "Capricorn": ["Afghan Kush", "Kosher Kush", "Critical Mass"],
+  "Aquarius": ["Space Queen", "AK-47", "White Widow"],
+  "Pisces": ["Northern Lights", "Purple Kush", "Tahoe OG"]
+};
+
+// Additional cannabis strains based on rising sign
+const risingSignStrains: Record<string, string[]> = {
+  "Aries": ["Super Lemon Haze", "Chocolope", "XJ-13"],
+  "Taurus": ["Pink Kush", "Grape Ape", "Blueberry"],
+  "Gemini": ["Cinex", "Jillybean", "Golden Goat"],
+  "Cancer": ["OG Kush", "Mochi", "Cookie Monster"],
+  "Leo": ["Maui Wowie", "Lemon Skunk", "Island Sweet Skunk"],
+  "Virgo": ["Cannatonic", "Remedy", "Sweet and Sour Widow"],
+  "Libra": ["Do-Si-Dos", "Cherry Pie", "Sherbet"],
+  "Scorpio": ["Gorilla Glue", "Alien OG", "Bubba Kush"],
+  "Sagittarius": ["Green Crack", "Jack the Ripper", "Chernobyl"],
+  "Capricorn": ["Granddaddy Purple", "Rock Star", "Master Kush"],
+  "Aquarius": ["Blue Dream", "Dream Queen", "XJ-13"],
+  "Pisces": ["Girl Scout Cookies", "Zkittlez", "Cherry Pie"]
+};
+
 export const getHoroscope = (sign: string): HoroscopeReading => {
   return horoscopeReadings[sign] || {
     general: "No reading available for today. Check back tomorrow for your cosmic guidance.",
@@ -131,4 +168,29 @@ export const getHoroscope = (sign: string): HoroscopeReading => {
     compatibility: "Unknown",
     cannabisStrains: ["Balance", "Harmony", "Serenity"]
   };
+};
+
+export const getCombinedStrainRecommendations = (
+  sunSign: string,
+  moonSign: string,
+  risingSign: string
+): string[] => {
+  const sunStrains = getHoroscope(sunSign).cannabisStrains || [];
+  const moonStrains = moonSignStrains[moonSign] || [];
+  const risingStrains = risingSignStrains[risingSign] || [];
+  
+  // Get unique strains by combining all three sign influences
+  const allStrains = [...sunStrains, ...moonStrains, ...risingStrains];
+  const uniqueStrains = Array.from(new Set(allStrains));
+  
+  // Select 4-6 strains (prioritizing ones that appear in multiple signs)
+  const strainCount: Record<string, number> = {};
+  allStrains.forEach(strain => {
+    strainCount[strain] = (strainCount[strain] || 0) + 1;
+  });
+  
+  // Sort strains by frequency (higher first) then select top strains
+  return uniqueStrains
+    .sort((a, b) => strainCount[b] - strainCount[a])
+    .slice(0, 5 + Math.floor(Math.random() * 2)); // 5-6 strains
 };
