@@ -1,7 +1,8 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Megaphone, Ad } from 'lucide-react';
+import { Megaphone, DollarSign } from 'lucide-react';
 import { useAds } from '@/context/AdContext';
 import { initializeAds, refreshAds } from '@/utils/adService';
 
@@ -89,7 +90,7 @@ const CosmicAd = ({ position = 'middle', adSlot = '1234567890' }: CosmicAdProps)
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
             {useGoogleAds ? (
-              <Ad className="h-4 w-4 text-primary" />
+              <DollarSign className="h-4 w-4 text-primary" />
             ) : (
               <Megaphone className="h-4 w-4 text-primary" />
             )}
