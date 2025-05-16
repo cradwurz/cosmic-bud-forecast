@@ -14,7 +14,7 @@ export interface SignCombination {
   risingSign: string;
 }
 
-// Mock data for horoscopes
+// Mock data for horoscopes - used as fallback if API fails
 const horoscopeReadings: Record<string, HoroscopeReading> = {
   "Aries": {
     general: "Your natural leadership skills shine today, Aries. Take initiative on projects that have been waiting for direction. Your confidence will inspire others to follow your lead.",
@@ -126,6 +126,83 @@ const horoscopeReadings: Record<string, HoroscopeReading> = {
   }
 };
 
+// Track when horoscopes were last fetched
+let lastFetchDate: string | null = null;
+let cachedHoroscopes: Record<string, HoroscopeReading> = { ...horoscopeReadings };
+
+/**
+ * Fetches horoscope data from an external API
+ * @param sign Zodiac sign to fetch data for
+ * @returns Promise with horoscope data
+ */
+export const fetchDailyHoroscope = async (sign: string): Promise<HoroscopeReading | null> => {
+  try {
+    // Aztro API is a reputable free horoscope API
+    const response = await fetch(`https://aztro.sameerkumar.website/?sign=${sign.toLowerCase()}&day=today`, {
+      method: 'POST'
+    });
+    
+    if (!response.ok) {
+      console.error('Failed to fetch horoscope data:', response.statusText);
+      return null;
+    }
+    
+    const data = await response.json();
+    
+    // Transform API data to match our interface
+    return {
+      general: data.description || 'No forecast available for today.',
+      love: data.compatibility ? `Today's romantic energy is especially aligned with ${data.compatibility}.` : 'Focus on self-love today.',
+      career: data.mood ? `Your professional mood today is "${data.mood}". ${data.color} may bring you luck in meetings.` : 'Focus on your goals today.',
+      wellness: data.lucky_time ? `Your energy peaks around ${data.lucky_time}. Plan important activities accordingly.` : 'Listen to your body today.',
+      luckyNumber: parseInt(data.lucky_number) || Math.floor(Math.random() * 12) + 1,
+      compatibility: data.compatibility || horoscopeReadings[sign].compatibility,
+      cannabisStrains: horoscopeReadings[sign].cannabisStrains, // Keep original strains
+    };
+  } catch (error) {
+    console.error('Error fetching horoscope:', error);
+    return null;
+  }
+};
+
+/**
+ * Updates all horoscopes from external API
+ * Returns true if updated, false if using cached data
+ */
+export const updateAllHoroscopes = async (): Promise<boolean> => {
+  const today = new Date().toISOString().split('T')[0];
+  
+  // Only fetch once per day
+  if (lastFetchDate === today) {
+    return false;
+  }
+  
+  let updated = false;
+  const signs = Object.keys(horoscopeReadings);
+  
+  for (const sign of signs) {
+    const horoscope = await fetchDailyHoroscope(sign);
+    if (horoscope) {
+      cachedHoroscopes[sign] = horoscope;
+      updated = true;
+    }
+  }
+  
+  if (updated) {
+    lastFetchDate = today;
+  }
+  
+  return updated;
+};
+
+export const getHoroscope = async (sign: string): Promise<HoroscopeReading> => {
+  // Try to update horoscopes first
+  await updateAllHoroscopes();
+  
+  // Return cached data (either from API or fallback)
+  return cachedHoroscopes[sign] || horoscopeReadings[sign];
+};
+
 // Additional cannabis strains based on moon sign
 const moonSignStrains: Record<string, string[]> = {
   "Aries": ["Mimosa", "Strawberry Cough", "Bruce Banner"],
@@ -156,18 +233,6 @@ const risingSignStrains: Record<string, string[]> = {
   "Capricorn": ["Granddaddy Purple", "Rock Star", "Master Kush"],
   "Aquarius": ["Blue Dream", "Dream Queen", "XJ-13"],
   "Pisces": ["Girl Scout Cookies", "Zkittlez", "Cherry Pie"]
-};
-
-export const getHoroscope = (sign: string): HoroscopeReading => {
-  return horoscopeReadings[sign] || {
-    general: "No reading available for today. Check back tomorrow for your cosmic guidance.",
-    love: "The stars are aligning. Be patient and trust the universe's timing.",
-    career: "Focus on your goals and let your natural talents guide you forward.",
-    wellness: "Take time for self-care and listen to what your body needs today.",
-    luckyNumber: 0,
-    compatibility: "Unknown",
-    cannabisStrains: ["Balance", "Harmony", "Serenity"]
-  };
 };
 
 export const getCombinedStrainRecommendations = (
