@@ -5,6 +5,7 @@ import HoroscopeDisplay from '@/components/HoroscopeDisplay';
 import CosmicElements from '@/components/CosmicElements';
 import CannabisRecommendations from '@/components/CannabisRecommendations';
 import CosmicAd from '@/components/CosmicAd';
+import CosmicBackground from '@/components/CosmicBackground';
 import { zodiacSigns } from '@/utils/zodiacData';
 import { useAds } from '@/context/AdContext';
 
@@ -23,7 +24,8 @@ const Index = () => {
   }, []);
 
   return (
-    <div className={`min-h-screen bg-background constellation ${isIOS ? 'ios-status-bar' : ''}`}>
+    <div className={`min-h-screen bg-background ${isIOS ? 'ios-status-bar' : ''}`}>
+      <CosmicBackground />
       <div className={`container max-w-4xl mx-auto px-4 py-8 relative z-10 ${isIOS ? 'ios-bottom-padding' : ''}`}>
         <header className="text-center mb-10">
           <h1 className="text-4xl md:text-5xl font-display font-bold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent mb-4 animate-float">
