@@ -9,7 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/use-toast';
-import { Moon, Sun, Star, Stars } from 'lucide-react';
 
 interface HoroscopeDisplayProps {
   sign: string;
@@ -59,14 +58,10 @@ const HoroscopeDisplay = ({ sign }: HoroscopeDisplayProps) => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h2 className="text-2xl font-display flex items-center">
-          <Stars className="mr-2 text-secondary h-6 w-6 animate-twinkle" />
-          Your Cosmic Forecast
-        </h2>
+        <h2 className="text-2xl font-display">Your Cosmic Forecast</h2>
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" className="justify-start text-left font-normal">
-              <Sun className="mr-2 h-4 w-4 text-accent" />
               <span>{formattedDate}</span>
             </Button>
           </PopoverTrigger>
@@ -81,29 +76,13 @@ const HoroscopeDisplay = ({ sign }: HoroscopeDisplayProps) => {
         </Popover>
       </div>
       
-      <div className="bg-card/40 backdrop-blur-sm border border-border rounded-lg p-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mr-8 -mt-8 text-primary opacity-10">
-          <Star className="h-40 w-40" />
-        </div>
-        
+      <div className="bg-card/40 backdrop-blur-sm border border-border rounded-lg p-6">
         <Tabs defaultValue="general" className="w-full">
           <TabsList className="grid grid-cols-4 mb-6">
-            <TabsTrigger value="general" className="flex items-center gap-1">
-              <Stars className="h-3 w-3" />
-              <span>General</span>
-            </TabsTrigger>
-            <TabsTrigger value="love" className="flex items-center gap-1">
-              <Star className="h-3 w-3" />
-              <span>Love</span>
-            </TabsTrigger>
-            <TabsTrigger value="career" className="flex items-center gap-1">
-              <Sun className="h-3 w-3" />
-              <span>Career</span>
-            </TabsTrigger>
-            <TabsTrigger value="wellness" className="flex items-center gap-1">
-              <Moon className="h-3 w-3" />
-              <span>Wellness</span>
-            </TabsTrigger>
+            <TabsTrigger value="general">General</TabsTrigger>
+            <TabsTrigger value="love">Love</TabsTrigger>
+            <TabsTrigger value="career">Career</TabsTrigger>
+            <TabsTrigger value="wellness">Wellness</TabsTrigger>
           </TabsList>
           
           {loading ? (
@@ -114,12 +93,9 @@ const HoroscopeDisplay = ({ sign }: HoroscopeDisplayProps) => {
             </div>
           ) : (
             <>
-              <TabsContent value="general" className="space-y-4 relative">
+              <TabsContent value="general" className="space-y-4">
                 <div className="leading-relaxed">{horoscope?.general}</div>
-                <div className="text-xs text-muted-foreground mt-2 flex items-center">
-                  <Stars className="h-3 w-3 mr-1" />
-                  Updated daily from trusted astrological sources
-                </div>
+                <div className="text-xs text-muted-foreground mt-2">Updated daily from trusted astrological sources</div>
               </TabsContent>
               
               <TabsContent value="love" className="space-y-4">
