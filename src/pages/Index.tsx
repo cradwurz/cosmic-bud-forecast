@@ -13,20 +13,33 @@ const Index = () => {
   const [selectedSign, setSelectedSign] = useState(zodiacSigns[0].name);
   const { isMobileDevice } = useAds();
   const [isIOS, setIsIOS] = useState(false);
+  const [isAndroid, setIsAndroid] = useState(false);
   
   useEffect(() => {
-    // Check if running on iOS
-    const checkIsIOS = () => {
+    // Check device platform
+    const checkDevicePlatform = () => {
       const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-      return /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+      const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+      const isAndroid = /android/i.test(userAgent);
+      
+      setIsIOS(isIOS);
+      setIsAndroid(isAndroid);
     };
-    setIsIOS(checkIsIOS());
+    
+    checkDevicePlatform();
   }, []);
 
+  // Determine which classes to apply based on device
+  const getDeviceSpecificClasses = () => {
+    if (isIOS) return 'ios-status-bar ios-bottom-padding';
+    if (isAndroid) return 'android-status-bar android-bottom-padding';
+    return '';
+  };
+
   return (
-    <div className={`min-h-screen bg-background ${isIOS ? 'ios-status-bar' : ''}`}>
+    <div className={`min-h-screen bg-background ${getDeviceSpecificClasses()}`}>
       <CosmicBackground />
-      <div className={`container max-w-4xl mx-auto px-4 py-8 relative z-10 ${isIOS ? 'ios-bottom-padding' : ''}`}>
+      <div className={`container max-w-4xl mx-auto px-4 py-8 relative z-10`}>
         <header className="text-center mb-10">
           <h1 className="text-4xl md:text-5xl font-display font-bold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent mb-4 animate-float">
             Cosmic Guidance
@@ -50,20 +63,20 @@ const Index = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="col-span-1 md:col-span-2 ios-scroll">
+          <div className={`col-span-1 md:col-span-2 ${isIOS ? 'ios-scroll' : isAndroid ? 'android-scroll' : ''}`}>
             <HoroscopeDisplay sign={selectedSign} />
           </div>
           <div className="col-span-1 md:col-span-2">
             <CosmicAd position="middle" />
           </div>
-          <div className="col-span-1 md:col-span-2 ios-scroll">
+          <div className={`col-span-1 md:col-span-2 ${isIOS ? 'ios-scroll' : isAndroid ? 'android-scroll' : ''}`}>
             <CannabisRecommendations sign={selectedSign} />
           </div>
         </div>
         
-        {(!isMobileDevice || isIOS) && <CosmicAd position="bottom" />}
+        {(!isMobileDevice || isIOS || isAndroid) && <CosmicAd position="bottom" />}
         
-        <footer className={`mt-16 text-center text-xs text-muted-foreground ${isIOS ? 'mb-6' : ''}`}>
+        <footer className={`mt-16 text-center text-xs text-muted-foreground ${isIOS ? 'mb-6' : isAndroid ? 'mb-4' : ''}`}>
           <p>The stars guide us, but we chart our own destiny.</p>
           <p className="mt-1">© {new Date().getFullYear()} Cosmic Guidance</p>
         </footer>

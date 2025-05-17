@@ -1,7 +1,7 @@
 
 /* Mobile specific styles */
 
-/* iOS safe area insets */
+/* iOS and Android safe area insets */
 :root {
   --safe-area-inset-top: env(safe-area-inset-top, 0px);
   --safe-area-inset-right: env(safe-area-inset-right, 0px);
@@ -35,22 +35,24 @@ html {
   overscroll-behavior-y: contain;
 }
 
-/* Better scrolling on iOS */
-.ios-scroll {
+/* Better scrolling for iOS and Android */
+.ios-scroll, .android-scroll {
   -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
 }
 
-/* Fix for iOS input zoom */
+/* Fix for mobile input zoom */
 input, select, textarea {
   font-size: 16px;
 }
 
-/* iOS-specific button styling */
-.ios-button {
+/* Custom button styling for mobile */
+.mobile-button {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Status bar styling for iOS */
+/* Status bar styling */
 @supports (-webkit-touch-callout: none) {
   .ios-status-bar {
     padding-top: env(safe-area-inset-top);
@@ -58,7 +60,46 @@ input, select, textarea {
   }
 }
 
-/* Adjust for bottom home indicator on iOS */
+/* Android status bar */
+.android-status-bar {
+  padding-top: 24px; /* Default Android status bar height */
+  background-color: var(--background);
+}
+
+/* Adjust for bottom navigation on iOS */
 .ios-bottom-padding {
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Adjust for bottom navigation on Android */
+.android-bottom-padding {
+  padding-bottom: 16px; /* Common Android navigation bar padding */
+}
+
+/* Android ripple effect simulation */
+.android-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.android-ripple::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.12);
+  opacity: 0;
+  transform: scale(0);
+  transition: transform 0.3s, opacity 0.3s;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.android-ripple:active::after {
+  transform: scale(1);
+  opacity: 1;
+  transition: 0s;
 }

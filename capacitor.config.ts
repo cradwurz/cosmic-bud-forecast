@@ -15,6 +15,13 @@ const config: CapacitorConfig = {
     allowsLinkPreview: true,
     scrollEnabled: true,
     backgroundColor: '#212121',
+  },
+  android: {
+    backgroundColor: '#212121',
+    allowMixedContent: true, // Allow loading non-HTTPS content
+    captureInput: true,      // Capture hardware back button
+    webContentsDebuggingEnabled: true, // Enable WebView debugging
+    initialFocus: true,      // Set initial focus for WebView
   }
 };
 

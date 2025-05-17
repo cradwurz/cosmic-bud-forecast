@@ -1,3 +1,4 @@
+
 export interface HoroscopeReading {
   daily: string;
   weekly: string;
@@ -246,4 +247,46 @@ export const getHoroscopeReading = async (sign: string): Promise<HoroscopeReadin
     weaknesses: [],
     cannabisStrains: []
   };
+};
+
+// Add the missing getHoroscope function
+export const getHoroscope = async (sign: string) => {
+  try {
+    const horoscopeData = await getHoroscopeReading(sign);
+    
+    return {
+      general: horoscopeData.daily,
+      love: "The cosmic alignment suggests new connections may form. Open your heart to unexpected possibilities.",
+      career: "Focus on collaborative projects. Your unique perspective will be valued by colleagues.",
+      wellness: "Balance physical activity with mental relaxation. The stars favor holistic approaches now.",
+      compatibility: horoscopeData.compatibility.join(", "),
+      luckyNumber: horoscopeData.luckyNumbers[Math.floor(Math.random() * horoscopeData.luckyNumbers.length)]
+    };
+  } catch (error) {
+    console.error("Error fetching horoscope:", error);
+    throw error;
+  }
+};
+
+// Add the missing getCombinedStrainRecommendations function
+export const getCombinedStrainRecommendations = (sunSign: string, moonSign: string, risingSign: string): string[] => {
+  try {
+    // Get strain recommendations for each sign
+    const sunSignData = horoscopeData[sunSign.toLowerCase()];
+    const moonSignData = horoscopeData[moonSign.toLowerCase()];
+    const risingSignData = horoscopeData[risingSign.toLowerCase()];
+    
+    // Combine recommendations, with sun sign having most weight
+    const allStrains = [
+      ...(sunSignData?.cannabisStrains || []),
+      ...(moonSignData?.cannabisStrains || []).slice(0, 2),
+      ...(risingSignData?.cannabisStrains || []).slice(0, 1)
+    ];
+    
+    // Remove duplicates and limit to 6 strains
+    return [...new Set(allStrains)].slice(0, 6);
+  } catch (error) {
+    console.error("Error getting strain recommendations:", error);
+    return ["Blue Dream", "OG Kush", "Girl Scout Cookies"];
+  }
 };

@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface Star {
   x: number;
@@ -17,6 +17,13 @@ interface Constellation {
 const CosmicBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number>();
+  const [isAndroid, setIsAndroid] = useState(false);
+  
+  // Check for Android to optimize rendering
+  useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    setIsAndroid(/android/i.test(userAgent));
+  }, []);
   
   // Zodiac constellations - simplified representations
   const constellations: Constellation[] = [
@@ -70,8 +77,9 @@ const CosmicBackground: React.FC = () => {
     window.addEventListener('resize', resize);
     resize();
 
-    // Create random stars
-    const stars: Star[] = Array.from({ length: 100 }).map(() => ({
+    // Create random stars - fewer stars for Android to improve performance
+    const starCount = isAndroid ? 50 : 100;
+    const stars: Star[] = Array.from({ length: starCount }).map(() => ({
       x: Math.random(),
       y: Math.random(),
       size: Math.random() * 2 + 1,
@@ -79,7 +87,7 @@ const CosmicBackground: React.FC = () => {
       twinkleSpeed: Math.random() * 0.01 + 0.005
     }));
 
-    // Animation function
+    // Animation function - optimize by reducing operations on Android
     const animate = (time: number) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
@@ -90,9 +98,15 @@ const CosmicBackground: React.FC = () => {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Draw stars with twinkling effect
+      // Draw stars with twinkling effect - simpler for Android
       stars.forEach(star => {
-        star.opacity = 0.3 + (Math.sin(time * star.twinkleSpeed) + 1) * 0.35;
+        if (isAndroid) {
+          // Simpler calculation for Android
+          star.opacity = 0.3 + (Math.sin(time * 0.001) * 0.3);
+        } else {
+          star.opacity = 0.3 + (Math.sin(time * star.twinkleSpeed) + 1) * 0.35;
+        }
+        
         ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
         ctx.beginPath();
         ctx.arc(
@@ -137,21 +151,30 @@ const CosmicBackground: React.FC = () => {
           );
           ctx.fill();
           
-          // Glow effect
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-          ctx.beginPath();
-          ctx.arc(
-            star.x * canvas.width,
-            star.y * canvas.height,
-            4,
-            0,
-            Math.PI * 2
-          );
-          ctx.fill();
+          // Glow effect - simpler for Android
+          if (!isAndroid) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.beginPath();
+            ctx.arc(
+              star.x * canvas.width,
+              star.y * canvas.height,
+              4,
+              0,
+              Math.PI * 2
+            );
+            ctx.fill();
+          }
         });
       });
 
-      requestRef.current = requestAnimationFrame(animate);
+      // Use a lower frame rate for Android to improve performance
+      if (isAndroid) {
+        setTimeout(() => {
+          requestRef.current = requestAnimationFrame(animate);
+        }, 50); // ~20fps for Android
+      } else {
+        requestRef.current = requestAnimationFrame(animate);
+      }
     };
 
     requestRef.current = requestAnimationFrame(animate);
@@ -163,7 +186,7 @@ const CosmicBackground: React.FC = () => {
         cancelAnimationFrame(requestRef.current);
       }
     };
-  }, []);
+  }, [isAndroid]);
 
   return (
     <canvas 
