@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Megaphone } from 'lucide-react';
+import { DollarSign } from 'lucide-react';
 import { useAds } from '@/context/AdContext';
 
 interface CosmicAdProps {
@@ -30,38 +30,42 @@ const adContent = [
 const CosmicAd = ({ position = 'middle' }: CosmicAdProps) => {
   const [currentAd, setCurrentAd] = useState(adContent[0]);
   const [isVisible, setIsVisible] = useState(true);
-  const { adsEnabled, adFrequency } = useAds();
+  const { adsEnabled, adFrequency, isMobileDevice } = useAds();
   
   // Early return if ads are disabled
   if (!adsEnabled) return null;
   
-  // Frequency-based visibility (for low frequency, skip some ad positions)
+  // Frequency-based visibility (for mobile and low frequency, show fewer ads)
   if (adFrequency === 'low' && position !== 'middle') return null;
+  
+  // For mobile devices, only show middle position ads if frequency is medium
+  if (isMobileDevice && adFrequency === 'medium' && position !== 'middle') return null;
 
   // Rotate through different ads
   useEffect(() => {
     const interval = setInterval(() => {
       const randomIndex = Math.floor(Math.random() * adContent.length);
       setCurrentAd(adContent[randomIndex]);
-    }, adFrequency === 'high' ? 15000 : 30000); // Change ad more frequently on high frequency
+    }, adFrequency === 'high' ? 15000 : 30000);
     
     return () => clearInterval(interval);
   }, [adFrequency]);
 
   const handleClose = () => {
     setIsVisible(false);
-    // After 2 minutes, show the ad again
-    setTimeout(() => setIsVisible(true), adFrequency === 'low' ? 180000 : 120000);
+    // After certain time, show the ad again (shorter for mobile)
+    const timeout = isMobileDevice ? 90000 : (adFrequency === 'low' ? 180000 : 120000);
+    setTimeout(() => setIsVisible(true), timeout);
   };
 
   if (!isVisible) return null;
 
   return (
-    <Card className={`cosmic-ad cosmic-ad-${position} my-4 overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm`}>
-      <CardContent className="p-4">
+    <Card className={`cosmic-ad cosmic-ad-${position} my-4 overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm ${isMobileDevice ? 'p-2' : ''}`}>
+      <CardContent className={isMobileDevice ? "p-3" : "p-4"}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
-            <Megaphone className="h-4 w-4 text-primary" />
+            <DollarSign className="h-4 w-4 text-primary" />
             <span className="text-xs uppercase tracking-wider text-muted-foreground">Cosmic Offering</span>
           </div>
           <Badge variant="outline" className="bg-primary/10 text-xs">{currentAd.badge}</Badge>

@@ -1,0 +1,64 @@
+
+/* Mobile specific styles */
+
+/* iOS safe area insets */
+:root {
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+}
+
+/* Apply safe area padding to main container */
+.mobile-safe-area {
+  padding-top: var(--safe-area-inset-top);
+  padding-right: var(--safe-area-inset-right);
+  padding-bottom: var(--safe-area-inset-bottom);
+  padding-left: var(--safe-area-inset-left);
+}
+
+/* Improve tap targets for mobile */
+button, a, .interactive {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Prevent text selection on mobile */
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Disable pull-to-refresh */
+html {
+  overscroll-behavior-y: contain;
+}
+
+/* Better scrolling on iOS */
+.ios-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for iOS input zoom */
+input, select, textarea {
+  font-size: 16px;
+}
+
+/* iOS-specific button styling */
+.ios-button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Status bar styling for iOS */
+@supports (-webkit-touch-callout: none) {
+  .ios-status-bar {
+    padding-top: env(safe-area-inset-top);
+    background-color: var(--background);
+  }
+}
+
+/* Adjust for bottom home indicator on iOS */
+.ios-bottom-padding {
+  padding-bottom: env(safe-area-inset-bottom);
+}
