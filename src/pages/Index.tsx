@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import ZodiacSelector from '@/components/ZodiacSelector';
 import HoroscopeDisplay from '@/components/HoroscopeDisplay';
@@ -7,6 +8,7 @@ import CosmicAd from '@/components/CosmicAd';
 import CosmicBackground from '@/components/CosmicBackground';
 import { zodiacSigns } from '@/utils/zodiacData';
 import { useAds } from '@/context/AdContext';
+
 const Index = () => {
   const [selectedSign, setSelectedSign] = useState(zodiacSigns[0].name);
   const {
@@ -14,6 +16,7 @@ const Index = () => {
   } = useAds();
   const [isIOS, setIsIOS] = useState(false);
   const [isAndroid, setIsAndroid] = useState(false);
+  
   useEffect(() => {
     // Check device platform
     const checkDevicePlatform = () => {
@@ -32,12 +35,13 @@ const Index = () => {
     if (isAndroid) return 'android-status-bar android-bottom-padding';
     return '';
   };
+
   return <div className={`min-h-screen bg-background ${getDeviceSpecificClasses()}`}>
       <CosmicBackground />
       <div className={`container max-w-4xl mx-auto px-4 py-8 relative z-10`}>
         <header className="text-center mb-10">
           <h1 className="text-4xl md:text-5xl font-display font-bold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent mb-4 animate-float">
-            Cosmic Guidance
+            Cosmic Cannabis Guide
           </h1>
           <p className="text-muted-foreground max-w-lg mx-auto">Discover what the stars have to say today. Select your zodiac sign to reveal cannabis strains that align with your personal horoscope.</p>
         </header>
@@ -68,9 +72,10 @@ const Index = () => {
         
         <footer className={`mt-16 text-center text-xs text-muted-foreground ${isIOS ? 'mb-6' : isAndroid ? 'mb-4' : ''}`}>
           <p>The stars guide us, but we chart our own destiny.</p>
-          <p className="mt-1">© {new Date().getFullYear()} Cosmic Guidance</p>
+          <p className="mt-1">© {new Date().getFullYear()} Cosmic Cannabis Guide</p>
         </footer>
       </div>
     </div>;
 };
+
 export default Index;

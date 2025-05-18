@@ -3,7 +3,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'app.lovable.e63f3222599c4de593a682c708b37cbd',
-  appName: 'cosmic-bud-forecast',
+  appName: 'cosmic-cannabis-guide',
   webDir: 'dist',
   bundledWebRuntime: false,
   server: {
