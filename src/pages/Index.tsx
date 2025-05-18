@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import ZodiacSelector from '@/components/ZodiacSelector';
 import HoroscopeDisplay from '@/components/HoroscopeDisplay';
@@ -8,24 +7,22 @@ import CosmicAd from '@/components/CosmicAd';
 import CosmicBackground from '@/components/CosmicBackground';
 import { zodiacSigns } from '@/utils/zodiacData';
 import { useAds } from '@/context/AdContext';
-
 const Index = () => {
   const [selectedSign, setSelectedSign] = useState(zodiacSigns[0].name);
-  const { isMobileDevice } = useAds();
+  const {
+    isMobileDevice
+  } = useAds();
   const [isIOS, setIsIOS] = useState(false);
   const [isAndroid, setIsAndroid] = useState(false);
-  
   useEffect(() => {
     // Check device platform
     const checkDevicePlatform = () => {
       const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
       const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
       const isAndroid = /android/i.test(userAgent);
-      
       setIsIOS(isIOS);
       setIsAndroid(isAndroid);
     };
-    
     checkDevicePlatform();
   }, []);
 
@@ -35,25 +32,18 @@ const Index = () => {
     if (isAndroid) return 'android-status-bar android-bottom-padding';
     return '';
   };
-
-  return (
-    <div className={`min-h-screen bg-background ${getDeviceSpecificClasses()}`}>
+  return <div className={`min-h-screen bg-background ${getDeviceSpecificClasses()}`}>
       <CosmicBackground />
       <div className={`container max-w-4xl mx-auto px-4 py-8 relative z-10`}>
         <header className="text-center mb-10">
           <h1 className="text-4xl md:text-5xl font-display font-bold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent mb-4 animate-float">
             Cosmic Guidance
           </h1>
-          <p className="text-muted-foreground max-w-lg mx-auto">
-            Discover what the stars have aligned for you today. Select your zodiac sign to reveal your personal cosmic forecast.
-          </p>
+          <p className="text-muted-foreground max-w-lg mx-auto">Discover what the stars have to say today. Select your zodiac sign to reveal cannabis strains that align with your personal horoscope.</p>
         </header>
 
         <div className="flex flex-col items-center mb-8">
-          <ZodiacSelector 
-            selectedSign={selectedSign}
-            onSelectSign={setSelectedSign}
-          />
+          <ZodiacSelector selectedSign={selectedSign} onSelectSign={setSelectedSign} />
         </div>
 
         <CosmicAd position="top" />
@@ -81,8 +71,6 @@ const Index = () => {
           <p className="mt-1">© {new Date().getFullYear()} Cosmic Guidance</p>
         </footer>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
