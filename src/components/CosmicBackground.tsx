@@ -1,5 +1,3 @@
 
-// This is now a null component that doesn't render anything
-const CosmicBackground = () => null;
-
+import CosmicBackground from './cosmic-background';
 export default CosmicBackground;
