@@ -1,9 +1,5 @@
 
-import React from 'react';
-import CosmicBackgroundCanvas from './CosmicBackgroundCanvas';
-
-const CosmicBackground: React.FC = () => {
-  return <CosmicBackgroundCanvas />;
-};
+// Empty component that doesn't render anything
+const CosmicBackground = () => null;
 
 export default CosmicBackground;
