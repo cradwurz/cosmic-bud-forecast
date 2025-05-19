@@ -1,6 +1,6 @@
 
 import { getHoroscope } from '@/utils/horoscopeData';
-import { format } from 'date-fns';
+import { format, isAfter, startOfDay } from 'date-fns';
 import { useState, useEffect } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,7 @@ const HoroscopeDisplay = ({ sign }: HoroscopeDisplayProps) => {
   const [date, setDate] = useState<Date>(new Date());
   const [horoscope, setHoroscope] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const { toast } = useToast();
   const formattedDate = format(date, 'MMMM d, yyyy');
   
@@ -27,6 +28,10 @@ const HoroscopeDisplay = ({ sign }: HoroscopeDisplayProps) => {
       try {
         const data = await getHoroscope(sign);
         setHoroscope(data);
+        setLastUpdated(new Date());
+        
+        // Store the last update time in localStorage
+        localStorage.setItem(`horoscope_${sign}_lastUpdated`, new Date().toISOString());
       } catch (error) {
         console.error('Failed to load horoscope:', error);
         toast({
@@ -39,21 +44,53 @@ const HoroscopeDisplay = ({ sign }: HoroscopeDisplayProps) => {
       }
     };
     
-    fetchHoroscope();
-  }, [sign, date, toast]);
-  
-  // Check for fresh data every hour
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (horoscope) {
-        getHoroscope(sign).then(newData => {
-          setHoroscope(newData);
-        });
+    // Check if we need to fetch new data based on the last update date
+    const checkForUpdate = () => {
+      const lastUpdateStr = localStorage.getItem(`horoscope_${sign}_lastUpdated`);
+      
+      if (lastUpdateStr) {
+        const lastUpdate = new Date(lastUpdateStr);
+        const today = startOfDay(new Date());
+        
+        // Only fetch if last update was before today or sign changed
+        if (isAfter(today, lastUpdate)) {
+          fetchHoroscope();
+        } else {
+          // Use cached data
+          setLoading(false);
+        }
+      } else {
+        // No previous update, fetch new data
+        fetchHoroscope();
       }
-    }, 60 * 60 * 1000); // Check hourly
+    };
     
-    return () => clearInterval(interval);
-  }, [sign, horoscope]);
+    // Initial check
+    checkForUpdate();
+    
+    // Set up daily check at midnight
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 10, 0); // 10 seconds after midnight
+    
+    const timeUntilMidnight = tomorrow.getTime() - now.getTime();
+    
+    // Schedule the first update for the next midnight
+    const midnightTimer = setTimeout(() => {
+      fetchHoroscope();
+      
+      // Then set up a daily interval
+      const dailyInterval = setInterval(fetchHoroscope, 24 * 60 * 60 * 1000);
+      
+      return () => clearInterval(dailyInterval);
+    }, timeUntilMidnight);
+    
+    // Also refresh when the sign changes
+    fetchHoroscope();
+    
+    return () => clearTimeout(midnightTimer);
+  }, [sign, toast]);
   
   return (
     <div className="space-y-6">
@@ -95,7 +132,12 @@ const HoroscopeDisplay = ({ sign }: HoroscopeDisplayProps) => {
             <>
               <TabsContent value="general" className="space-y-4">
                 <div className="leading-relaxed">{horoscope?.general}</div>
-                <div className="text-xs text-muted-foreground mt-2">Updated daily from trusted astrological sources</div>
+                <div className="text-xs text-muted-foreground mt-2">
+                  Updated daily from trusted astrological sources
+                  <span className="ml-2 italic">
+                    (Last refresh: {format(lastUpdated, 'MMM d, h:mm a')})
+                  </span>
+                </div>
               </TabsContent>
               
               <TabsContent value="love" className="space-y-4">
