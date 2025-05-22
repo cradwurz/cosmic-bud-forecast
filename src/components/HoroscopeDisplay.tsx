@@ -19,6 +19,7 @@ const HoroscopeDisplay = ({ sign }: HoroscopeDisplayProps) => {
   const [horoscope, setHoroscope] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [source, setSource] = useState<string>("horoscope.com");
   const { toast } = useToast();
   const formattedDate = format(date, 'MMMM d, yyyy');
   
@@ -29,16 +30,18 @@ const HoroscopeDisplay = ({ sign }: HoroscopeDisplayProps) => {
         const data = await getHoroscope(sign);
         setHoroscope(data);
         setLastUpdated(new Date());
+        setSource("horoscope.com");
         
         // Store the last update time in localStorage
         localStorage.setItem(`horoscope_${sign}_lastUpdated`, new Date().toISOString());
       } catch (error) {
-        console.error('Failed to load horoscope:', error);
+        console.error('Failed to load horoscope from horoscope.com:', error);
         toast({
           title: "Error loading horoscope",
           description: "We're using our backup cosmic data instead.",
           variant: "destructive",
         });
+        setSource("backup data");
       } finally {
         setLoading(false);
       }
@@ -133,7 +136,7 @@ const HoroscopeDisplay = ({ sign }: HoroscopeDisplayProps) => {
               <TabsContent value="general" className="space-y-4">
                 <div className="leading-relaxed">{horoscope?.general}</div>
                 <div className="text-xs text-muted-foreground mt-2">
-                  Updated daily from trusted astrological sources
+                  Updated daily from {source}
                   <span className="ml-2 italic">
                     (Last refresh: {format(lastUpdated, 'MMM d, h:mm a')})
                   </span>
