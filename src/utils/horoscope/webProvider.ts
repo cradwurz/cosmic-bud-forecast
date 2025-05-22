@@ -19,7 +19,8 @@ export const fetchHoroscopeFromWeb = async (sign: string): Promise<DailyHoroscop
     const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
     
     // Use the sign name and day of year to create pseudo-random but consistent daily content
-    const randomSeed = (signLowerCase.charCodeAt(0) + dayOfYear) % 10;
+    // Fix: Convert the char code to number and ensure math operations are between numbers
+    const randomSeed = (signLowerCase.charCodeAt(0) + Number(dayOfYear)) % 10;
     
     // Create sign-specific content templates
     const generalTemplates = [
@@ -83,7 +84,7 @@ export const fetchHoroscopeFromWeb = async (sign: string): Promise<DailyHoroscop
       career: careerTemplates[randomSeed],
       wellness: wellnessTemplates[randomSeed],
       compatibility: compatibleSigns,
-      luckyNumber: ((signLowerCase.charCodeAt(0) + dayOfYear) % 100) + 1 // 1-100
+      luckyNumber: ((signLowerCase.charCodeAt(0) + Number(dayOfYear)) % 100) + 1 // 1-100
     };
   } catch (error) {
     console.error("Error fetching from horoscope.com:", error);
@@ -150,7 +151,9 @@ function wellnessActivity(sign: string): string {
   // Use sign and day to select a consistent but changing activity
   const today = new Date();
   const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
-  const activityIndex = (sign.charCodeAt(0) + dayOfYear) % activities.length;
+  
+  // Fix: Convert the char code to number and ensure math operations are between numbers
+  const activityIndex = (sign.charCodeAt(0) + Number(dayOfYear)) % activities.length;
   
   return activities[activityIndex];
 }

@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { getCombinedStrainRecommendations } from '@/utils/horoscope/strainRecommendations';
+import { getCombinedStrainRecommendations } from '@/utils/horoscope';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { zodiacSigns } from '@/utils/zodiacData';
