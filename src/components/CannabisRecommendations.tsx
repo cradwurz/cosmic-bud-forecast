@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { getCombinedStrainRecommendations } from '@/utils/horoscopeData';
+import { getCombinedStrainRecommendations } from '@/utils/horoscope/strainRecommendations';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { zodiacSigns } from '@/utils/zodiacData';
@@ -88,3 +88,4 @@ const CannabisRecommendations = ({ sign }: CannabisRecommendationsProps) => {
 };
 
 export default CannabisRecommendations;
+

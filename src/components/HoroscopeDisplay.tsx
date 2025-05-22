@@ -1,13 +1,14 @@
+
 import { getHoroscope } from '@/utils/horoscope';
-import { format, isAfter, startOfDay } from 'date-fns';
+import { format, isAfter, startOfDay, addDays } from 'date-fns';
 import { useState, useEffect } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/use-toast';
+import { RefreshCw } from 'lucide-react';
 
 interface HoroscopeDisplayProps {
   sign: string;
@@ -31,8 +32,11 @@ const HoroscopeDisplay = ({ sign }: HoroscopeDisplayProps) => {
         setLastUpdated(new Date());
         setSource("horoscope.com");
         
-        // Store the last update time in localStorage
-        localStorage.setItem(`horoscope_${sign}_lastUpdated`, new Date().toISOString());
+        // Store the last update time in localStorage with sign-specific key
+        localStorage.setItem(`horoscope_${sign.toLowerCase()}_lastUpdated`, new Date().toISOString());
+        
+        // Also store the horoscope data to reduce unnecessary fetches
+        localStorage.setItem(`horoscope_${sign.toLowerCase()}_data`, JSON.stringify(data));
       } catch (error) {
         console.error('Failed to load horoscope from horoscope.com:', error);
         toast({
@@ -46,36 +50,41 @@ const HoroscopeDisplay = ({ sign }: HoroscopeDisplayProps) => {
       }
     };
     
-    // Check if we need to fetch new data based on the last update date
+    // Check if we need to fetch new data based on the last update date and sign
     const checkForUpdate = () => {
-      const lastUpdateStr = localStorage.getItem(`horoscope_${sign}_lastUpdated`);
+      const signKey = sign.toLowerCase();
+      const lastUpdateStr = localStorage.getItem(`horoscope_${signKey}_lastUpdated`);
+      const cachedDataStr = localStorage.getItem(`horoscope_${signKey}_data`);
       
-      if (lastUpdateStr) {
+      if (lastUpdateStr && cachedDataStr) {
         const lastUpdate = new Date(lastUpdateStr);
         const today = startOfDay(new Date());
         
-        // Only fetch if last update was before today or sign changed
-        if (isAfter(today, lastUpdate)) {
-          fetchHoroscope();
-        } else {
-          // Use cached data
-          setLoading(false);
+        // Use cached data if it exists and is from today
+        if (isAfter(lastUpdate, today) && cachedDataStr) {
+          try {
+            const cachedData = JSON.parse(cachedDataStr);
+            setHoroscope(cachedData);
+            setLastUpdated(lastUpdate);
+            setLoading(false);
+            return;
+          } catch (e) {
+            console.error("Error parsing cached horoscope data:", e);
+            // Continue to fetch if parsing fails
+          }
         }
-      } else {
-        // No previous update, fetch new data
-        fetchHoroscope();
       }
+      
+      // No valid cached data, fetch new data
+      fetchHoroscope();
     };
     
-    // Initial check
+    // Initial check when sign changes
     checkForUpdate();
     
     // Set up daily check at midnight
     const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 10, 0); // 10 seconds after midnight
-    
+    const tomorrow = addDays(startOfDay(now), 1); // Get tomorrow at midnight
     const timeUntilMidnight = tomorrow.getTime() - now.getTime();
     
     // Schedule the first update for the next midnight
@@ -88,31 +97,73 @@ const HoroscopeDisplay = ({ sign }: HoroscopeDisplayProps) => {
       return () => clearInterval(dailyInterval);
     }, timeUntilMidnight);
     
-    // Also refresh when the sign changes
-    fetchHoroscope();
-    
     return () => clearTimeout(midnightTimer);
   }, [sign, toast]);
+  
+  // Function to manually refresh horoscope
+  const handleRefresh = async () => {
+    setLoading(true);
+    try {
+      // Clear cached data to force a fresh fetch
+      localStorage.removeItem(`horoscope_${sign.toLowerCase()}_lastUpdated`);
+      localStorage.removeItem(`horoscope_${sign.toLowerCase()}_data`);
+      
+      const data = await getHoroscope(sign);
+      setHoroscope(data);
+      setLastUpdated(new Date());
+      setSource("horoscope.com");
+      
+      // Update localStorage
+      localStorage.setItem(`horoscope_${sign.toLowerCase()}_lastUpdated`, new Date().toISOString());
+      localStorage.setItem(`horoscope_${sign.toLowerCase()}_data`, JSON.stringify(data));
+      
+      toast({
+        title: "Horoscope Updated",
+        description: `Your ${sign} horoscope has been refreshed with today's cosmic insights.`,
+      });
+    } catch (error) {
+      console.error('Failed to refresh horoscope:', error);
+      toast({
+        title: "Error refreshing horoscope",
+        description: "We're using our backup cosmic data instead.",
+        variant: "destructive",
+      });
+      setSource("backup data");
+    } finally {
+      setLoading(false);
+    }
+  };
   
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h2 className="text-2xl font-display">Your Cosmic Forecast</h2>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="justify-start text-left font-normal">
-              <span>{formattedDate}</span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="end">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={(newDate) => newDate && setDate(newDate)}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
+        <h2 className="text-2xl font-display">Your {sign} Cosmic Forecast</h2>
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="icon"
+            onClick={handleRefresh}
+            disabled={loading}
+            title="Refresh horoscope"
+          >
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="justify-start text-left font-normal">
+                <span>{formattedDate}</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="end">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={(newDate) => newDate && setDate(newDate)}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
       
       <div className="bg-card/40 backdrop-blur-sm border border-border rounded-lg p-6">
