@@ -1,5 +1,4 @@
-
-import { getHoroscope } from '@/utils/horoscopeData';
+import { getHoroscope } from '@/utils/horoscope';
 import { format, isAfter, startOfDay } from 'date-fns';
 import { useState, useEffect } from 'react';
 import { Calendar } from '@/components/ui/calendar';
